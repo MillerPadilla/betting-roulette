@@ -8,5 +8,6 @@ import { RoulettesService } from './roulettes.service';
   imports: [InfrastructureModule],
   controllers: [RoulettesController],
   providers: [RoulettesService, RoulettesRepository],
+  exports: [RoulettesRepository],
 })
 export class RoulettesModule {}

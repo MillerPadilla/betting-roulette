@@ -13,6 +13,15 @@ export class UsersRepository {
     private redisService: RedisService,
     private authService: AuthService,
   ) {}
+
+  async getId(userName: string): Promise<string> {
+    return await this.redisService.hget('users', userName);
+  }
+
+  async getOne(userId: string): Promise<UserDto> {
+    return await this.redisService.hgetall(`user:${userId}`);
+  }
+
   async create(userDto: UserDto): Promise<number> {
     const userId = await this.redisService.incr('next_user_id');
     userDto.password = await this.authService.hashPassword(userDto.password);
@@ -23,20 +32,12 @@ export class UsersRepository {
     return userId;
   }
 
-  async getId(userName: string): Promise<number> {
-    return await this.redisService.hget('users', userName);
-  }
-
-  async getData(userId: number): Promise<UserDto> {
-    return await this.redisService.hgetall(`user:${userId}`);
-  }
-
   async signIn(signInDto: SignInDto): Promise<string> {
-    const userId: number = await this.getId(signInDto.userName);
+    const userId = await this.getId(signInDto.userName);
     if (!userId) {
       throw new BadRequestException('The user does not exist');
     }
-    const userData = await this.getData(userId);
+    const userData = await this.getOne(userId);
     const valid = this.authService.validatePassword(
       signInDto.password,
       userData.password,

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { BetsModule } from 'src/domain/bets/bets.module';
 import { RoulettesModule } from 'src/domain/roulettes/roulettes.module';
 import { UsersModule } from 'src/domain/users/users.module';
 import { InfrastructureModule } from 'src/infrastructure/infrastructure.module';
@@ -10,6 +11,7 @@ import { HealthController } from './health.controller';
     ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     RoulettesModule,
+    BetsModule,
     InfrastructureModule,
   ],
   controllers: [HealthController],

@@ -6,6 +6,10 @@ import { RouletteDto, OpenRouletteDto } from './dto';
 export class RoulettesRepository {
   constructor(private redisService: RedisService) {}
 
+  async getOne(rouletteId: string): Promise<RouletteDto> {
+    return await this.redisService.hgetall(`roulette:${rouletteId}`);
+  }
+
   async getAll(): Promise<RouletteDto[]> {
     const roulettesIds = await this.redisService.smembers('roulettes');
     let roulettes = [];
@@ -15,10 +19,6 @@ export class RoulettesRepository {
       roulettes.push(roulette);
     }
     return roulettes;
-  }
-
-  async getOne(rouletteId: number): Promise<RouletteDto> {
-    return await this.redisService.hgetall(`roulette:${rouletteId}`);
   }
 
   async create(rouletteDto: RouletteDto): Promise<number> {
@@ -38,12 +38,16 @@ export class RoulettesRepository {
     if (!resRoulette) {
       throw new BadRequestException('The roulette does not exist');
     }
-    const response =
-      (await this.redisService.hset(
-        `roulette:${openRouletteDto.rouletteId}`,
-        'open',
-        'true',
-      )) || true;
-    return response;
+    if (resRoulette.open == 'true') {
+      return true;
+    }
+    const response = await this.redisService.hmset(
+      `roulette:${openRouletteDto.rouletteId}`,
+      {
+        open: 'true',
+        round: Number(resRoulette.round) + 1,
+      },
+    );
+    return response ? true : false;
   }
 }
