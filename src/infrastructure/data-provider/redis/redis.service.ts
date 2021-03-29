@@ -3,16 +3,29 @@ import { promisify } from 'util';
 
 @Injectable()
 export class RedisService {
-  public get = promisify(this.redisConnection.get).bind(this.redisConnection);
-  public set = promisify(this.redisConnection.set).bind(this.redisConnection);
-  public incr = promisify(this.redisConnection.incr).bind(this.redisConnection);
-  public hset = promisify(this.redisConnection.hset).bind(this.redisConnection);
-  public hmset = promisify(this.redisConnection.hmset).bind(
-    this.redisConnection,
-  );
-  public hgetall = promisify(this.redisConnection.hgetall).bind(
-    this.redisConnection,
-  );
-  public hget = promisify(this.redisConnection.hget).bind(this.redisConnection);
-  constructor(@Inject('REDIS_CONNECTION') private redisConnection) {}
+  public get: Function;
+  public set: Function;
+  public incr: Function;
+  public hset: Function;
+  public hmset: Function;
+  public hgetall: Function;
+  public hget: Function;
+  public smembers: Function;
+  public sadd: Function;
+
+  constructor(@Inject('REDIS_CONNECTION') private redisConnection) {
+    this.get = this.convertToAsynchronous('get');
+    this.set = this.convertToAsynchronous('set');
+    this.incr = this.convertToAsynchronous('incr');
+    this.hset = this.convertToAsynchronous('hset');
+    this.hmset = this.convertToAsynchronous('hmset');
+    this.hgetall = this.convertToAsynchronous('hgetall');
+    this.hget = this.convertToAsynchronous('hget');
+    this.smembers = this.convertToAsynchronous('smembers');
+    this.sadd = this.convertToAsynchronous('sadd');
+  }
+
+  convertToAsynchronous(key) {
+    return promisify(this.redisConnection[key]).bind(this.redisConnection);
+  }
 }
