@@ -54,6 +54,9 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# swagger UI
+http://localhost:3000/api/
 ```
 
 ## Test
