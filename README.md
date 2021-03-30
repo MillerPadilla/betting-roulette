@@ -1,6 +1,13 @@
 # betting-roulette
 
-Proof of concept of a real betting roulette wheel
+Proof of concept of a betting roulette API built in NodeJS with NestJS.
+
+## API diagram
+
+![alt text](https://github.com/MillerPadilla/betting-roulette/blob/dev/documentation/diagram.png?raw=true)
+
+
+## Made with
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
