@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RouletteDto, OpenRouletteDto } from './dto';
+import { RouletteDto, OpenRouletteDto, CloseRouletteDto } from './dto';
 import { RoulettesRepository } from './roulettes.repository';
 
 @Injectable()
@@ -16,5 +16,9 @@ export class RoulettesService {
 
   async open(openRouletteDto: OpenRouletteDto): Promise<boolean> {
     return await this.roulettesRepository.open(openRouletteDto);
+  }
+
+  async close(closeRouletteDto: CloseRouletteDto): Promise<any[]> {
+    return await this.roulettesRepository.close(closeRouletteDto);
   }
 }

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { RouletteDto, OpenRouletteDto } from './dto';
+import { RouletteDto, OpenRouletteDto, CloseRouletteDto } from './dto';
 import { RoulettesService } from './roulettes.service';
 
 @Controller('roulettes')
@@ -19,5 +19,10 @@ export class RoulettesController {
   @Post('/open')
   async open(@Body() openRouletteDto: OpenRouletteDto): Promise<boolean> {
     return await this.roulettesService.open(openRouletteDto);
+  }
+
+  @Post('/close')
+  async close(@Body() closeRouletteDto: CloseRouletteDto): Promise<any[]> {
+    return await this.roulettesService.close(closeRouletteDto);
   }
 }

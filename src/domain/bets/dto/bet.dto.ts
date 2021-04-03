@@ -41,4 +41,8 @@ export class BetDto {
   @ApiProperty()
   @IsEmpty()
   won: string;
+
+  @ApiProperty()
+  @IsEmpty()
+  earnedMoney: string;
 }
