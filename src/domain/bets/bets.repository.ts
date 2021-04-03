@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { RedisService } from 'src/infrastructure/data-provider/redis/redis.service';
 import { RoulettesRepository } from '../roulettes/roulettes.repository';
 import { UsersRepository } from '../users/users.repository';
@@ -8,9 +13,25 @@ import { BetDto } from './dto';
 export class BetsRepository {
   constructor(
     private redisService: RedisService,
+    @Inject(forwardRef(() => RoulettesRepository))
     private roulettesRepository: RoulettesRepository,
     private usersRepository: UsersRepository,
   ) {}
+
+  getOne(betId: string): Promise<BetDto> {
+    return this.redisService.hgetall(`bet:${betId}`);
+  }
+
+  updateBetWinnings(
+    betId: string,
+    won: boolean,
+    earnedMoney: number,
+  ): Promise<boolean> {
+    return this.redisService.hmset(`bet:${betId}`, {
+      won,
+      earnedMoney,
+    });
+  }
 
   async create(betDto: BetDto): Promise<boolean> {
     await this.validateUserAndRoulette(betDto);
