@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisConnection } from './data-provider/redis/redis.connection';
 import { RedisService } from './data-provider/redis/redis.service';
@@ -7,9 +7,13 @@ import { AuthService } from './providers/auth.service';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: 'LLAVE',
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
+      }),
+      inject: [ConfigService],
     }),
   ],
   providers: [RedisConnection, RedisService, AuthService],
